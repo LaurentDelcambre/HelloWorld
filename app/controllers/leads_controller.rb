@@ -27,9 +27,9 @@ class LeadsController < ApplicationController
   # GET /leads/new.json
   def new
     @lead = Lead.new
-	@lead['OwnerId'] = '005U0000000ZSTx'
-	@lead['IsConverted'] = false
-	@lead['IsUnreadByOwner'] = true
+	#@lead['OwnerId'] = '005U0000000ZSTx'
+	#@lead['IsConverted'] = false
+	#@lead['IsUnreadByOwner'] = true
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @lead }
