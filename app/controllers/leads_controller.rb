@@ -6,6 +6,7 @@ class LeadsController < ApplicationController
   def index
     @leads = Lead.all
 
+	logger.info params[:status]
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @leads }
@@ -26,6 +27,7 @@ class LeadsController < ApplicationController
   # GET /leads/new
   # GET /leads/new.json
   def new
+	logger.info "My method"
     @lead = Lead.new
 	@lead['OwnerId'] = '005U0000000ZSTx'
 	@lead['IsConverted'] = false
