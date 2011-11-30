@@ -45,7 +45,12 @@ class LeadsController < ApplicationController
 	def new
 		logger.info "Before Materialization"
 		formObject = @client.materialize("TQM_Form__c")
-		myForm = formObject.find("a0AU0000000zrwg")
+		#myForm = formObject.find("a0AU0000000zrwg")
+		myForm = formObject.new
+		myForm["iForm_Table_Name__c"]="test"
+		myForm["Salesforce_Object__c"]="test"
+		myForm.name = "my name"
+		myForm.save
 		puts "After Materialization"
 		logger.info "After Materialization"
 		logger.info myForm["name"]
