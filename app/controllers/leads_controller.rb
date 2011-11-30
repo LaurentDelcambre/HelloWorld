@@ -1,11 +1,17 @@
 class LeadsController < ApplicationController
 	include Databasedotcom::Rails::Controller
 	
+	#require 'openssl'
+	
 	# Exception Handler
 	rescue_from Exception, :with => :handle_exceptions
 	
+	
 	# Constructor
 	def initialize
+		#if Rails.env.development? 
+			#OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+		#end
 		@client = self.dbdc_client
 	end
 	
@@ -105,5 +111,5 @@ class LeadsController < ApplicationController
 		
 		def handle_exceptions(e)
 		  puts 'Catastrophy!!! ' + e.inspect
-		end  (at the bottom)
+		end
 end
