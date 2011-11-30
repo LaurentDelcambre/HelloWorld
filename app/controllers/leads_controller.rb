@@ -46,6 +46,7 @@ class LeadsController < ApplicationController
 		logger.info "Before Materialization"
 		formObject = @client.materialize("TQM_Form__c")
 		myForm = formObject.find("a0AU0000000zrwg")
+		puts "After Materialization"
 		logger.info "After Materialization"
 		logger.info myForm["name"]
 		logger.info myForm["iForm_Table_Name__c"]
