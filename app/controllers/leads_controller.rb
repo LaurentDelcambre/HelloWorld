@@ -1,89 +1,109 @@
 class LeadsController < ApplicationController
-	 include Databasedotcom::Rails::Controller
+	include Databasedotcom::Rails::Controller
+	
+	# Exception Handler
+	rescue_from Exception, :with => :handle_exceptions
+	
+	# Constructor
+	def initialize
+		@client = self.dbdc_client
+	end
+	
+	# GET /leads
+	# GET /leads.json
+	def index
+		@leads = Lead.all
+		
+		
 
-  # GET /leads
-  # GET /leads.json
-  def index
-    @leads = Lead.all
+		logger.info params[:status]
+		respond_to do |format|
+		  format.html # index.html.erb
+		  format.json { render json: @leads }
+		end
+	end
 
-	logger.info params[:status]
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @leads }
-    end
-  end
+	# GET /leads/1
+	# GET /leads/1.json
+	def show
+		@lead = Lead.find(params[:id])
 
-  # GET /leads/1
-  # GET /leads/1.json
-  def show
-    @lead = Lead.find(params[:id])
+		respond_to do |format|
+		  format.html # show.html.erb
+		  format.json { render json: @lead }
+		end
+	end
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @lead }
-    end
-  end
+	# GET /leads/new
+	# GET /leads/new.json
+	def new
+		logger.info "Before Materialization"
+		formObject = @client.materialize("TQM_Form__c")
+		formObject.new
+		logger.info "After Materialization"
+		@lead = Lead.new
+		@lead['OwnerId'] = '005U0000000ZSTx'
+		@lead['IsConverted'] = false
+		@lead['IsUnreadByOwner'] = true
+		respond_to do |format|
+		  format.html # new.html.erb
+		  format.json { render json: @lead }
+		end
+	end
 
-  # GET /leads/new
-  # GET /leads/new.json
-  def new
-	logger.info "My method"
-    @lead = Lead.new
-	@lead['OwnerId'] = '005U0000000ZSTx'
-	@lead['IsConverted'] = false
-	@lead['IsUnreadByOwner'] = true
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @lead }
-    end
-  end
+	# GET /leads/1/edit
+	def edit
+		@lead = Lead.find(params[:id])
+	end
 
-  # GET /leads/1/edit
-  def edit
-    @lead = Lead.find(params[:id])
-  end
+	# POST /leads
+	# POST /leads.json
+	def create
+		@lead = Lead.new(params[:lead])
 
-  # POST /leads
-  # POST /leads.json
-  def create
-    @lead = Lead.new(params[:lead])
+		respond_to do |format|
+		  if @lead.save
+			format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
+			format.json { render json: @lead, status: :created, location: @lead }
+		  else
+			format.html { render action: "new" }
+			format.json { render json: @lead.errors, status: :unprocessable_entity }
+		  end
+		end
+	end
 
-    respond_to do |format|
-      if @lead.save
-        format.html { redirect_to @lead, notice: 'Lead was successfully created.' }
-        format.json { render json: @lead, status: :created, location: @lead }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @lead.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+	# PUT /leads/1
+	# PUT /leads/1.json
+	def update
+		@lead = Lead.find(params[:id])
 
-  # PUT /leads/1
-  # PUT /leads/1.json
-  def update
-    @lead = Lead.find(params[:id])
+		respond_to do |format|
+		  if @lead.update_attributes(params[:lead])
+			format.html { redirect_to @lead, notice: 'Lead was successfully updated.' }
+			format.json { head :ok }
+		  else
+			format.html { render action: "edit" }
+			format.json { render json: @lead.errors, status: :unprocessable_entity }
+		  end
+		end
+	end
 
-    respond_to do |format|
-      if @lead.update_attributes(params[:lead])
-        format.html { redirect_to @lead, notice: 'Lead was successfully updated.' }
-        format.json { head :ok }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @lead.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+	# DELETE /leads/1
+	# DELETE /leads/1.json
+	def destroy
+		@lead = Lead.find(params[:id])
+		@lead.destroy
 
-  # DELETE /leads/1
-  # DELETE /leads/1.json
-  def destroy
-    @lead = Lead.find(params[:id])
-    @lead.destroy
-
-    respond_to do |format|
-      format.html { redirect_to leads_url }
-      format.json { head :ok }
-    end
-  end
+		respond_to do |format|
+		  format.html { redirect_to leads_url }
+		  format.json { head :ok }
+		end
+	end
+	  
+	# private methods
+	private
+		
+		def handle_exceptions(e)
+		  puts 'Catastrophy!!! ' + e.inspect
+		end  (at the bottom)
 end
