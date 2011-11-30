@@ -45,8 +45,10 @@ class LeadsController < ApplicationController
 	def new
 		logger.info "Before Materialization"
 		formObject = @client.materialize("TQM_Form__c")
-		formObject.new
+		myForm = formObject.find("")
 		logger.info "After Materialization"
+		logger.info myForm["name"]
+		logger.info myForm["iForm_Table_Name__c"]
 		@lead = Lead.new
 		@lead['OwnerId'] = '005U0000000ZSTx'
 		@lead['IsConverted'] = false
